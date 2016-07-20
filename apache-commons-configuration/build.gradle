@@ -1,0 +1,25 @@
+import java.nio.file.FileSystems
+import java.nio.file.Files
+import java.nio.file.Path
+
+// in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
+ospackage {
+    packageName = 'apache-commons-configuration-wildfly-module'
+    version = '1.10'
+    release = '0'
+    user = 'root'
+    os = LINUX
+
+    provides('apache-commons-configuration')
+    provides('commons-configuration')
+
+    requires('wildfly')
+
+    // it's conflict with 'wildfly' installed rpm, if do copy to linked folder...
+    into '/opt/wildfly/modules'
+
+    from('/resources') {
+        addParentDirs = false
+        createDirectoryEntry = true
+    }
+}

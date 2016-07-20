@@ -1,0 +1,65 @@
+ospackage {
+    version = '10.0.0'
+    release = 'Final'
+    user = 'root'
+    // arch = X86_64 - wildfly not depend on CPU architecture
+    os = LINUX
+
+    provides('wildfly')
+    provides('wildfly-server')
+
+    requires('java-1.8.0', '1.8', GREATER | EQUAL)
+
+    into '/opt'
+
+    from('/resources/wildfly-10.0.0.Final') {
+        into 'wildfly'
+    }
+    link('/opt/wildfly-10.0.0.Final', '/opt/wildfly')
+}
+
+buildRpm {
+    packageName = 'wildfly-standalone'
+
+    preInstall file('/scripts/preInstall.sh')
+    postInstall file('/scripts/postInstall.sh')
+    preUninstall file('/scripts/preUninstall.sh')
+
+    from('/resources/standalone/wildfly.conf') {
+        into '/etc/wildfly'
+    }
+    from('/resources/standalone/wildfly.service') {
+        into '/etc/systemd/system'
+    }
+    from('/resources/standalone/launch.sh') {
+        into '/opt/wildfly-10.0.0.Final/bin'
+    }
+}
+
+task buildWildfly10FinalDevRpm (type: Rpm) {
+    packageName = 'wildfly-standalone-dev'
+
+    preInstall file('/scripts/preInstall.sh')
+    postInstall file('/scripts/postInstall.sh')
+    preUninstall file('/scripts/preUninstall.sh')
+
+    from('/resources/standalone-dev/wildfly.conf') {
+        into '/etc/wildfly'
+    }
+    from('/resources/standalone-dev/wildfly.service') {
+        into '/etc/systemd/system'
+    }
+    from('/resources/standalone-dev/launch.sh') {
+        into '/opt/wildfly/bin'
+    }
+    from('/resources/standalone-dev/standalone.xml') {
+        into '/opt/wildfly/standalone/configuration'
+    }
+}
+
+/*
+buildDeb {
+    //requires('bat', '1.0.1')
+    //link('/etc/init.d/foo', '/opt/foo/bin/foo.upstart')
+}
+*/
