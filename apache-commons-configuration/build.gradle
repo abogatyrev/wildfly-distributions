@@ -1,7 +1,3 @@
-import java.nio.file.FileSystems
-import java.nio.file.Files
-import java.nio.file.Path
-
 // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
 ospackage {
     packageName = 'apache-commons-configuration-wildfly-module'
@@ -9,9 +5,13 @@ ospackage {
     release = '0'
     user = 'root'
     os = LINUX
+    packager = 'Andrey Bogatyrev'
+    buildHost = 'localhost'
 
     provides('apache-commons-configuration')
     provides('commons-configuration')
+    provides('commons-configuration-wildfly')
+    provides('commons-configuration-wildfly-module')
 
     requires('wildfly')
 
@@ -22,4 +22,6 @@ ospackage {
         addParentDirs = false
         createDirectoryEntry = true
     }
+
+    postInstall file('/scripts/postInstall.sh')
 }

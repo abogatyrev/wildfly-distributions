@@ -4,6 +4,8 @@ ospackage {
     user = 'root'
     // arch = X86_64 - wildfly not depend on CPU architecture
     os = LINUX
+    packager = 'Andrey Bogatyrev'
+    buildHost = 'localhost'
 
     provides('wildfly')
     provides('wildfly-server')
@@ -32,7 +34,7 @@ buildRpm {
         into '/etc/systemd/system'
     }
     from('/resources/standalone/launch.sh') {
-        into '/opt/wildfly-10.0.0.Final/bin'
+        into '/opt/wildfly/bin'
     }
 }
 
