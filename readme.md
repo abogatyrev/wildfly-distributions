@@ -1,1 +1,3 @@
-http://programmingquirks.com/java-8-rpm-dependency/
+_**TODO**_
+
+Project for creating rpm (deb) packages for helping Wildfly developers and administrators do faster provisioning environment
