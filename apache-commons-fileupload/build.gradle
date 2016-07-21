@@ -1,0 +1,27 @@
+// in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
+ospackage {
+    packageName = 'apache-commons-fileupload-wildfly-module'
+    version = '1.3.1'
+    release = '0'
+    user = 'root'
+    os = LINUX
+    packager = 'Andrey Bogatyrev'
+    buildHost = 'localhost'
+
+    provides('apache-commons-fileupload')
+    provides('commons-fileupload')
+    provides('commons-fileupload-wildfly')
+    provides('commons-fileupload-wildfly-module')
+
+    requires('wildfly')
+
+    // it's conflict with 'wildfly' installed rpm, if do copy to linked folder...
+    into '/opt/wildfly/modules'
+
+    from('/resources') {
+        addParentDirs = false
+        createDirectoryEntry = true
+    }
+
+    postInstall file('/scripts/postInstall.sh')
+}
