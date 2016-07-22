@@ -1,4 +1,4 @@
-def distributionTags = ['apache-commons-lang3', 'commons-lang3', 'commons-lang3-wildfly', 'commons-lang3-wildfly-module']
+def distributionTags = ['joda', 'joda-wildfly', 'joda-wildfly-module']
 
 // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
 ospackage {

@@ -1,14 +1,24 @@
+def distributionTags = ['wildfly', 'wildfly-server']
+
 ospackage {
-    version = '10.0.0'
-    release = 'Final'
+    version = "${distributionPackageVersion}"
+    release = "${distributionPackageRelease}"
     user = 'root'
+
     // arch = X86_64 - wildfly not depend on CPU architecture
     os = LINUX
+    type = BINARY
+
+    license = "${distributionPackageLicense}"
+    url = "${distributionPackageUrl}"
+    sourcePackage = '-'
+
     packager = 'Andrey Bogatyrev'
     buildHost = 'localhost'
 
-    provides('wildfly')
-    provides('wildfly-server')
+    distributionTags.each {
+        provides("$it")
+    }
 
     requires('java-1.8.0', '1.8', GREATER | EQUAL)
 
@@ -21,7 +31,8 @@ ospackage {
 }
 
 buildRpm {
-    packageName = 'wildfly-standalone'
+    packageName = "${distributionPackageName}"
+    packageDescription = "${distributionPackageDescription}"
 
     preInstall file('/scripts/preInstall.sh')
     postInstall file('/scripts/postInstall.sh')
@@ -39,7 +50,8 @@ buildRpm {
 }
 
 task buildWildfly10FinalDevRpm (type: Rpm) {
-    packageName = 'wildfly-standalone-dev'
+    packageName = "${distributionPackageName}-dev"
+    packageDescription = "${distributionPackageDescription} Configured for developing wildfly applications."
 
     preInstall file('/scripts/preInstall.sh')
     postInstall file('/scripts/postInstall.sh')
@@ -65,3 +77,28 @@ buildDeb {
     //link('/etc/init.d/foo', '/opt/foo/bin/foo.upstart')
 }
 */
+
+//vcsIssues - https://github.com/abogatyrev/wildfly-distributions/issues
+// vcsTag
+
+bintray {
+    pkg {
+        repo = 'wildfly_distributions'
+        name = "${distributionPackageName}"
+        desc = "${distributionPackageDescription}"
+        websiteUrl = "${distributionPackageUrl}"
+        licenses = ["${distributionPackageLicense}"]
+        vcsUrl = 'https://github.com/abogatyrev/wildfly-distributions.git'
+        issueTrackerUrl = 'https://github.com/abogatyrev/wildfly-distributions/issues'
+        labels = distributionTags
+        publicDownloadNumbers = true
+        version {
+            name = "${distributionPackageVersion}-${distributionPackageRelease}"
+            vcsTag = '-'
+        }
+    }
+}
+
+task buildAndPublish(dependsOn: [buildRpm, buildWildfly10FinalDevRpm, bintrayUpload]){}
+
+bintrayUpload.mustRunAfter([buildRpm, buildWildfly10FinalDevRpm])

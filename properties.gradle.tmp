@@ -1,0 +1,4 @@
+project.ext {
+    bintrayUser = 'BINTRAY_USER_NAME'
+    bintrayApiKey = 'BINTRAY_API_KEY'
+}

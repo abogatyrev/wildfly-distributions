@@ -1,17 +1,26 @@
+def distributionTags = ['apache-commons-configuration', 'commons-configuration', 'commons-configuration-wildfly', 'commons-configuration-wildfly-module']
+
 // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
 ospackage {
-    packageName = 'apache-commons-configuration-wildfly-module'
-    version = '1.10'
-    release = '0'
+    packageName = "${distributionPackageName}"
+    version = "${distributionPackageVersion}"
+    release = "${distributionPackageRelease}"
     user = 'root'
+
     os = LINUX
+    type = BINARY
+
+    license = "${distributionPackageLicense}"
+    url = "${distributionPackageUrl}"
+    sourcePackage = '-'
+
     packager = 'Andrey Bogatyrev'
     buildHost = 'localhost'
+    packageDescription = "${distributionPackageDescription}"
 
-    provides('apache-commons-configuration')
-    provides('commons-configuration')
-    provides('commons-configuration-wildfly')
-    provides('commons-configuration-wildfly-module')
+    distributionTags.each {
+        provides("$it")
+    }
 
     requires('wildfly')
 
@@ -23,5 +32,27 @@ ospackage {
         createDirectoryEntry = true
     }
 
-    postInstall file('/scripts/postInstall.sh')
+    postInstall file('../commons/scripts/echo_restart_wildfly.sh')
 }
+
+bintray {
+    pkg {
+        repo = 'wildfly_distributions'
+        name = "${distributionPackageName}"
+        desc = "${distributionPackageDescription}"
+        websiteUrl = "${distributionPackageUrl}"
+        licenses = ["${distributionPackageLicense}"]
+        vcsUrl = 'https://github.com/abogatyrev/wildfly-distributions.git'
+        issueTrackerUrl = 'https://github.com/abogatyrev/wildfly-distributions/issues'
+        labels = distributionTags
+        publicDownloadNumbers = true
+        version {
+            name = "${distributionPackageVersion}-${distributionPackageRelease}"
+            vcsTag = '-'
+        }
+    }
+}
+
+task buildAndPublish(dependsOn: [buildRpm, bintrayUpload]){}
+
+bintrayUpload.mustRunAfter([buildRpm])

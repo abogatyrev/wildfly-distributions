@@ -1,4 +1,4 @@
-def distributionTags = ['apache-commons-lang3', 'commons-lang3', 'commons-lang3-wildfly', 'commons-lang3-wildfly-module']
+def distributionTags = ['apache-poi', 'poi', 'poi-wildfly', 'poi-wildfly-module']
 
 // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
 ospackage {
@@ -23,6 +23,9 @@ ospackage {
     }
 
     requires('wildfly')
+    requires('google-libphonenumber')
+    requires('joda')
+
 
     // it's conflict with 'wildfly' installed rpm, if do copy to linked folder...
     into '/opt/wildfly/modules'
