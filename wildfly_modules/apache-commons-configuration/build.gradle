@@ -32,7 +32,8 @@ ospackage {
         createDirectoryEntry = true
     }
 
-    postInstall file('../commons/scripts/echo_restart_wildfly.sh')
+
+    postInstall file('../../_commons/scripts/echo_restart_wildfly.sh')
 }
 
 bintray {
