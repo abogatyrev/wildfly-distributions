@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.netflix.nebula:gradle-ospackage-plugin:${gradleOspackagePlugin}"
+    }
+}
+
+apply plugin: 'nebula.ospackage'
+
+def distributionTags = ['wildfly-distributions-repo']
+
+ospackage {
+    version = "${distributionPackageVersion}"
+    release = "${distributionPackageRelease}"
+    user = 'root'
+
+    // arch = X86_64 - wildfly not depend on CPU architecture
+    os = LINUX
+    type = BINARY
+
+    license = "${distributionPackageLicense}"
+    url = "${distributionPackageUrl}"
+    sourcePackage = '-'
+
+    packager = 'Andrey Bogatyrev'
+    buildHost = 'localhost'
+
+    distributionTags.each {
+        provides("$it")
+    }
+
+    packageName = "${distributionPackageName}"
+    packageDescription = "${distributionPackageDescription}"
+}
+
+buildRpm {
+    from('/resources') {
+        into '/etc/yum.repos.d/'
+    }
+}
