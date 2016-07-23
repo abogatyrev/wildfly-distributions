@@ -1,0 +1,58 @@
+def distributionTags = ['drools-wildfly', 'drools']
+
+// in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
+ospackage {
+    packageName = "${distributionPackageName}"
+    version = "${distributionPackageVersion}"
+    release = "${distributionPackageRelease}"
+    user = 'root'
+
+    os = LINUX
+    type = BINARY
+
+    license = "${distributionPackageLicense}"
+    url = "${distributionPackageUrl}"
+    sourcePackage = '-'
+
+    packager = 'Andrey Bogatyrev'
+    buildHost = 'localhost'
+    packageDescription = "${distributionPackageDescription}"
+
+    distributionTags.each {
+        provides("$it")
+    }
+
+    requires('wildfly')
+
+    // it's conflict with 'wildfly' installed rpm, if do copy to linked folder...
+    into '/opt/wildfly/modules'
+
+    from('/resources') {
+        addParentDirs = false
+        createDirectoryEntry = true
+    }
+
+    postInstall file('../commons/scripts/echo_restart_wildfly.sh')
+}
+
+bintray {
+    pkg {
+        repo = 'wildfly_distributions'
+        name = "${distributionPackageName}"
+        desc = "${distributionPackageDescription}"
+        websiteUrl = "${distributionPackageUrl}"
+        licenses = ["${distributionPackageLicense}"]
+        vcsUrl = 'https://github.com/abogatyrev/wildfly-distributions.git'
+        issueTrackerUrl = 'https://github.com/abogatyrev/wildfly-distributions/issues'
+        labels = distributionTags
+        publicDownloadNumbers = true
+        version {
+            name = "${distributionPackageVersion}-${distributionPackageRelease}"
+            vcsTag = '-'
+        }
+    }
+}
+
+task buildAndPublish(dependsOn: [buildRpm, bintrayUpload]){}
+
+bintrayUpload.mustRunAfter([buildRpm])

@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<module xmlns="urn:jboss:module:1.3" name="org.drools">
+    <resources>
+        <resource-root path="drools-compiler-6.3.0.Final.jar" />
+        <resource-root path="drools-core-6.3.0.Final.jar" />
+        <resource-root path="kie-api-6.3.0.Final.jar" />
+        <resource-root path="kie-internal-6.3.0.Final.jar" />
+
+        <resource-root path="xstream-1.4.7.jar" />
+        <resource-root path="mvel2-2.2.6.Final.jar" />                
+        <resource-root path="antlr-runtime-3.5.jar" />
+        <resource-root path="protobuf-java-2.5.0.jar" />
+    </resources>
+    <dependencies>
+        <module name="javax.api" />
+        <module name="org.slf4j" />
+        <module name="javax.enterprise.api" />
+        <module name="javax.transaction.api" />
+        <module name="javax.persistence.api" />
+	    <module name="org.eclipse.jdt.ecj" />
+    </dependencies>
+</module>
