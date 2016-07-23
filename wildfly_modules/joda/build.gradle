@@ -1,4 +1,4 @@
-def distributionTags = ['joda', 'joda-wildfly']
+def distributionTags = ['joda', 'joda-wildfly', 'joda-time', 'joda-money']
 
 // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
 ospackage {
