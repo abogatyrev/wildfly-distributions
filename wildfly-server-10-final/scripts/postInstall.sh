@@ -9,5 +9,7 @@ groupadd -r wildfly
 useradd -r -g wildfly -d /opt/wildfly -s /sbin/nologin wildfly
 
 # Start and enable
+[ -x /bin/systemctl ] && (systemctl daemon-reload || :)
 [ -x /bin/systemctl ] && (systemctl start wildfly || :) || (service wildfly start || :)
 [ -x /bin/systemctl ] && (systemctl enable wildfly || :) || (service wildfly enable || :)
+

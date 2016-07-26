@@ -1,4 +1,4 @@
-def distributionTags = ['mariadb-client', 'mariadb-client-wildfly', 'mariadb']
+def distributionTags = ['mariadb-driver', 'mariadb-driver-wildfly']
 
 // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
 ospackage {
@@ -27,12 +27,19 @@ ospackage {
     // it's conflict with 'wildfly' installed rpm, if do copy to linked folder...
     into '/opt/wildfly/modules'
 
-    from('/resources') {
+    from('/resources/module') {
         addParentDirs = false
         createDirectoryEntry = true
     }
 
-    postInstall file('../../_commons/scripts/echo_restart_wildfly.sh')
+    from('/resources/cli') {
+        into '/tmp//mariadb-driver/cli'
+    }
+
+    postInstall file('resources/rpm/scripts/postInstall.sh')
+    //postInstall file('../../_commons/scripts/echo_restart_wildfly.sh')
+
+    preUninstall file('resources/rpm/scripts/preUninstall.sh')
 }
 
 bintray {

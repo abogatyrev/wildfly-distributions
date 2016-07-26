@@ -1,0 +1,4 @@
+embed-server
+
+# config MariaDB driver
+/subsystem=datasources/jdbc-driver=mariadb:add(driver-module-name=org.mariadb,driver-name=mariadb,driver-class-name=org.mariadb.jdbc.Driver,driver-xa-datasource-class-name=org.mariadb.jdbc.MySQLDataSource)
