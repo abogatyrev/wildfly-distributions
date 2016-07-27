@@ -1,4 +1,4 @@
-def distributionTags = ['jasper-reports', 'jasper-reports-wildfly', 'jasper', 'jasper-wildfly']
+def distributionTags = ['jasper-reports-wildfly', 'jasper-wildfly']
 
 // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
 ospackage {
