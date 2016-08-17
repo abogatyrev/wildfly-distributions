@@ -1,0 +1,3 @@
+#@IgnoreInspection BashAddShebang
+
+userdel wildfly

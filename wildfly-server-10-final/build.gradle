@@ -37,6 +37,7 @@ buildRpm {
     preInstall file('/scripts/preInstall.sh')
     postInstall file('/scripts/postInstall.sh')
     preUninstall file('/scripts/preUninstall.sh')
+    postUninstall file('/scripts/postUninstall.sh')
 
     from('/resources/standalone/wildfly.conf') {
         into '/etc/wildfly'
@@ -56,6 +57,7 @@ task buildWildfly10FinalDevRpm (type: Rpm) {
     preInstall file('/scripts/preInstall.sh')
     postInstall file('/scripts/postInstall.sh')
     preUninstall file('/scripts/preUninstall.sh')
+    postUninstall file('/scripts/postUninstall.sh')
 
     from('/resources/standalone-dev/wildfly.conf') {
         into '/etc/wildfly'
