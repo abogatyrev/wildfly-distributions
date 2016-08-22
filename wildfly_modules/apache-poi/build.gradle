@@ -23,6 +23,7 @@ ospackage {
     }
 
     requires('wildfly')
+    requires('apache-xmlbeans-wildfly-module')
 
     // it's conflict with 'wildfly' installed rpm, if do copy to linked folder...
     into '/opt/wildfly/modules'

@@ -1,0 +1,8 @@
+<module xmlns="urn:jboss:module:1.3" name="org.apache.xmlbeans">
+    <resources>
+        <resource-root path="xmlbeans-2.6.0.jar"/>
+    </resources>
+    <dependencies>
+        <module name="javax.api" export="true"/>
+    </dependencies>
+</module>
