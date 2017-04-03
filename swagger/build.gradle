@@ -1,4 +1,4 @@
-def distributionTags = ['apache-commons-configuration2', 'commons-configuration2', 'commons-configuration2-wildfly', 'commons-configuration2-wildfly-module']
+def distributionTags = ['jadira-wildfly', 'jadira']
 
 // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
 ospackage {
@@ -23,6 +23,9 @@ ospackage {
     }
 
     requires('wildfly')
+    requires('google-libphonenumber-wildfly-module')
+    requires('joda-wildfly-module')
+
 
     // it's conflict with 'wildfly' installed rpm, if do copy to linked folder...
     into '/opt/wildfly/modules'
@@ -32,8 +35,7 @@ ospackage {
         createDirectoryEntry = true
     }
 
-
-    postInstall file('../../_commons/scripts/echo_restart_wildfly.sh')
+    postInstall file('../commons/scripts/echo_restart_wildfly.sh')
 }
 
 bintray {

@@ -1,4 +1,4 @@
-def distributionTags = ['apache-commons-configuration2', 'commons-configuration2', 'commons-configuration2-wildfly', 'commons-configuration2-wildfly-module']
+def distributionTags = ['reflections', 'reflections-wildfly']
 
 // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
 ospackage {
@@ -32,8 +32,7 @@ ospackage {
         createDirectoryEntry = true
     }
 
-
-    postInstall file('../../_commons/scripts/echo_restart_wildfly.sh')
+    postInstall file('../commons/scripts/echo_restart_wildfly.sh')
 }
 
 bintray {
