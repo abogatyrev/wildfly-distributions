@@ -1,4 +1,4 @@
-def distributionTags = ['apache-commons-configuration', 'commons-configuration', 'commons-configuration-wildfly', 'commons-configuration-wildfly-module']
+def distributionTags = ['apache-commons-configuration2', 'commons-configuration2', 'commons-configuration2-wildfly', 'commons-configuration2-wildfly-module']
 
 // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
 ospackage {
