@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.netflix.nebula:gradle-ospackage-plugin:${gradleOspackagePlugin}"
+        classpath "com.netflix.nebula:gradle-ospackage-plugin:${gradleOspackagePlugin}"
     }
 }
 
@@ -43,4 +43,8 @@ buildRpm {
     from('/resources') {
         into '/etc/yum.repos.d/'
     }
+}
+
+task Wrapper(type: Wrapper) { // run > gradle wrapper
+    gradleVersion = '4.0.2'
 }
