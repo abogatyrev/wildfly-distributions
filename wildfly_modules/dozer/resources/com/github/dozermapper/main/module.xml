@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+
+<module xmlns="urn:jboss:module:1.3" name="com.github.dozermapper">
+    <resources>
+        <resource-root path="dozer-schema-6.1.0.jar"/>
+        <resource-root path="dozer-core-6.1.0.jar"/>
+    </resources>
+
+    <dependencies>
+        <module name="org.apache.commons-lang3"/>
+        <module name="org.apache.commons.beanutils"/>
+        <module name="org.slf4j"/>
+    </dependencies>
+</module>
