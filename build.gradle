@@ -1,3 +1,5 @@
+apply from: 'properties.gradle'
+
 buildscript {
     repositories {
         mavenLocal()
@@ -8,31 +10,103 @@ buildscript {
     }
     dependencies {
         classpath "com.netflix.nebula:gradle-ospackage-plugin:${gradleOspackagePlugin}"
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:${gradleBintrayPluginVersion}"
     }
 }
 
-apply from: 'properties.gradle'
-
 subprojects {
-    apply plugin: 'nebula.ospackage'
-    apply plugin: 'com.jfrog.bintray'
+    if (project.parent.name == 'wildfly_modules' || project.name == 'wildfly-server-10-final') {
+        apply plugin: 'nebula.ospackage'
+        apply plugin: 'maven'
 
-    bintray {
-        user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-        key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+        if (project.parent.name == 'wildfly_modules') {
+            // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
+            ospackage {
+                println "Building artifact: ${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm"
+                distributionTags = "${distributionTags}".split(',')
+                println "Tags: ${distributionTags}"
 
-        filesSpec {
-            from 'build/distributions'
-            into '.'
+                packageName = "${distributionPackageName}"
+                version = "${distributionPackageVersion}"
+                release = "${distributionPackageRelease}"
+
+                user = 'wildfly'
+                permissionGroup = 'wildfly'
+
+                os = LINUX
+                type = BINARY
+
+                license = "${distributionPackageLicense}"
+                url = "${distributionPackageUrl}"
+
+                packager = 'Andrey Bogatyrev'
+                packageDescription = "${distributionPackageDescription}"
+
+                distributionTags.each {
+                    provides("$it".trim())
+                }
+
+                requires('wildfly')
+
+                // it's conflict with 'wildfly' installed rpm, if do copy to linked folder...
+                into '/opt/wildfly/modules'
+
+                from('/resources') {
+                    addParentDirs = false
+                    createDirectoryEntry = true
+                }
+
+//            postInstall file('../_resources/rpm/scripts/echo_restart_wildfly.sh')
+            }
         }
 
-        dryRun = false //[Default: false] Whether to run this as dry-run, without deploying
-        publish = true //[Default: false] Whether version should be auto published after an upload
-        //override = true //[Default: false] Whether to override version artifacts already published - doesn't work...
+        configurations {
+            distributions
+        }
+        artifacts {
+            distributions file: new File("${buildDir}/distributions", "${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm"),
+                    name: "${distributionPackageName}", type: 'rpm', classifier: 'noarch'
+        }
+
+        uploadDistributions {
+            description 'Uploads the RPM distributions.'
+            group 'publishing'
+            repositories {
+                mavenDeployer {
+                    configuration = configurations.distributions
+                    repository(url: 'http://nexus.avbsoft.org/content/repositories/wildfly-distributions/') {
+                        authentication(userName: "${nexusUsername}", password: "${nexusPassword}")
+                    }
+                    if (project.name == 'wildfly-server-10-final') {
+                        addFilter('rpm-prod') { artifact, file ->
+                            artifact.ext == 'rpm'
+                            artifact.name == "${distributionPackageName}"
+                        }
+                        pom('rpm-prod').version = "${distributionPackageVersion}-${distributionPackageRelease}"
+                        pom('rpm-prod').artifactId = "${distributionPackageName}"
+                        pom('rpm-prod').whenConfigured { pom -> pom.dependencies.clear() } // not need dependencies...
+
+                        addFilter('rpm-dev') { artifact, file ->
+                            artifact.ext == 'rpm'
+                            artifact.name == "${distributionPackageName}-dev"
+                        }
+                        pom('rpm-dev').version = "${distributionPackageVersion}-${distributionPackageRelease}"
+                        pom('rpm-dev').artifactId = "${distributionPackageName}-dev"
+                        pom('rpm-dev').whenConfigured { pom -> pom.dependencies.clear() } // not need dependencies...
+                    } else {
+                        pom.version = "${distributionPackageVersion}-${distributionPackageRelease}"
+                        pom.whenConfigured { pom -> pom.dependencies.clear() } // not need dependencies...
+                    }
+                }
+            }
+        }
+
+        task buildAndPublish(dependsOn: [buildRpm, uploadDistributions]) {}
+        uploadDistributions.mustRunAfter([buildRpm])
+
     }
 
+
     task Wrapper(type: Wrapper) { // run > gradle wrapper
-        gradleVersion = '4.0.2'
+        gradleVersion = "${gradleVersion}"
     }
 }

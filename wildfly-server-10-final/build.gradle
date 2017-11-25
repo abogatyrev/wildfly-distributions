@@ -1,9 +1,15 @@
-def distributionTags = ['wildfly', 'wildfly-server']
-
 ospackage {
+    println "Building artifacts: \n" +
+            "1. ${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm\n" +
+            "2. ${distributionPackageName}-dev-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm"
+    distributionTags = "${distributionTags}".split(',')
+    println "Tags: ${distributionTags}"
+
     version = "${distributionPackageVersion}"
     release = "${distributionPackageRelease}"
+
     user = 'root'
+    permissionGroup = 'root'
 
     // arch = X86_64 - wildfly not depend on CPU architecture
     os = LINUX
@@ -11,33 +17,34 @@ ospackage {
 
     license = "${distributionPackageLicense}"
     url = "${distributionPackageUrl}"
-    sourcePackage = '-'
 
     packager = 'Andrey Bogatyrev'
     buildHost = 'localhost'
 
     distributionTags.each {
-        provides("$it")
+        provides("$it".trim())
     }
 
     requires('java-1.8.0', '1.8', GREATER | EQUAL)
 
-    into '/opt'
-
-    from('/resources/wildfly-10.1.0.Final') {
-        into 'wildfly'
+    from('/resources/wildfly-10.1.0.Final/') {
+        into '/opt/wildfly'
+        createDirectoryEntry = true
     }
-    link('/opt/wildfly-10.1.0.Final', '/opt/wildfly')
-}
-
-buildRpm {
-    packageName = "${distributionPackageName}"
-    packageDescription = "${distributionPackageDescription}"
 
     preInstall file('/scripts/preInstall.sh')
     postInstall file('/scripts/postInstall.sh')
     preUninstall file('/scripts/preUninstall.sh')
     postUninstall file('/scripts/postUninstall.sh')
+
+//    link('/opt/wildfly-10.1.0.Final', '/opt/wildfly')
+}
+
+task buildWildfly10FinalProdRpm(type: Rpm) {
+    packageName = "${distributionPackageName}"
+    packageDescription = "${distributionPackageDescription}"
+
+    conflicts("${distributionPackageName}-dev")
 
     from('/resources/standalone/wildfly.conf') {
         into '/etc/wildfly'
@@ -50,14 +57,13 @@ buildRpm {
     }
 }
 
-task buildWildfly10FinalDevRpm (type: Rpm) {
+task buildWildfly10FinalDevRpm(type: Rpm) {
     packageName = "${distributionPackageName}-dev"
     packageDescription = "${distributionPackageDescription} Configured for developing wildfly applications."
 
-    preInstall file('/scripts/preInstall.sh')
-    postInstall file('/scripts/postInstall.sh')
-    preUninstall file('/scripts/preUninstall.sh')
-    postUninstall file('/scripts/postUninstall.sh')
+    conflicts("${distributionPackageName}")
+
+    provides('wildfly-server-dev')
 
     from('/resources/standalone-dev/wildfly.conf') {
         into '/etc/wildfly'
@@ -73,34 +79,10 @@ task buildWildfly10FinalDevRpm (type: Rpm) {
     }
 }
 
-/*
-buildDeb {
-    //requires('bat', '1.0.1')
-    //link('/etc/init.d/foo', '/opt/foo/bin/foo.upstart')
-}
-*/
-
-//vcsIssues - https://github.com/abogatyrev/wildfly-distributions/issues
-// vcsTag
-
-bintray {
-    pkg {
-        repo = 'wildfly_distributions'
-        name = "${distributionPackageName}"
-        desc = "${distributionPackageDescription}"
-        websiteUrl = "${distributionPackageUrl}"
-        licenses = ["${distributionPackageLicense}"]
-        vcsUrl = 'https://github.com/abogatyrev/wildfly-distributions.git'
-        issueTrackerUrl = 'https://github.com/abogatyrev/wildfly-distributions/issues'
-        labels = distributionTags
-        publicDownloadNumbers = true
-        version {
-            name = "${distributionPackageVersion}-${distributionPackageRelease}"
-            vcsTag = '-'
-        }
-    }
+artifacts {
+    distributions file: new File("${buildDir}/distributions", "${distributionPackageName}-dev-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm"),
+            name: "${distributionPackageName}-dev", type: 'rpm', classifier: 'noarch'
 }
 
-task buildAndPublish(dependsOn: [buildRpm, buildWildfly10FinalDevRpm, bintrayUpload]){}
-
-bintrayUpload.mustRunAfter([buildRpm, buildWildfly10FinalDevRpm])
+task buildAndPublish(dependsOn: [buildWildfly10FinalProdRpm, buildWildfly10FinalDevRpm, uploadDistributions], overwrite: true) {}
+uploadDistributions.mustRunAfter([buildWildfly10FinalProdRpm, buildWildfly10FinalDevRpm])
