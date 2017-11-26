@@ -3,6 +3,9 @@
 chown -R wildfly:wildfly /opt/wildfly
 chmod +x /opt/wildfly/bin/*.sh
 
+# remove all Windows end of line symbols
+sed -i 's/\r//g' /opt/wildfly/bin/*.sh
+
 chmod 777 /opt/wildfly/standalone/deployments
 chmod 777 /opt/wildfly/standalone/configuration/standalone_xml_history
 
