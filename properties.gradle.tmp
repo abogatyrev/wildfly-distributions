@@ -1,4 +1,4 @@
 project.ext {
-    bintrayUser = 'BINTRAY_USER_NAME'
-    bintrayApiKey = 'BINTRAY_API_KEY'
+    nexusUsername = 'USER_NAME'
+    nexusPassword = 'USER_PASSWORD'
 }
