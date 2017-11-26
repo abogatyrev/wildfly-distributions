@@ -14,11 +14,11 @@ buildscript {
 }
 
 subprojects {
-    if (project.parent.name == 'wildfly_modules' || project.name == 'wildfly-server-10-final') {
+    if (project.parent.name == 'wildfly-modules' || project.name == 'wildfly-server') {
         apply plugin: 'nebula.ospackage'
         apply plugin: 'maven'
 
-        if (project.parent.name == 'wildfly_modules') {
+        if (project.parent.name == 'wildfly-modules') {
             // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
             ospackage {
                 println "RPM artifact: ${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm"
@@ -75,7 +75,7 @@ subprojects {
                     repository(url: 'http://nexus.avbsoft.org/content/repositories/wildfly-distributions/') {
                         authentication(userName: "${nexusUsername}", password: "${nexusPassword}")
                     }
-                    if (project.name == 'wildfly-server-10-final') {
+                    if (project.name == 'wildfly-server') {
                         addFilter('rpm-prod') { artifact, file ->
                             artifact.ext == 'rpm'
                             artifact.name == "${distributionPackageName}"
