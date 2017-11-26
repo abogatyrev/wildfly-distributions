@@ -21,7 +21,7 @@ subprojects {
         if (project.parent.name == 'wildfly_modules') {
             // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
             ospackage {
-                println "Building artifact: ${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm"
+                println "RPM artifact: ${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm"
                 distributionTags = "${distributionTags}".split(',')
                 println "Tags: ${distributionTags}"
 
