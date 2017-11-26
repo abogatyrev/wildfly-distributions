@@ -36,8 +36,6 @@ ospackage {
     postInstall file('/scripts/postInstall.sh')
     preUninstall file('/scripts/preUninstall.sh')
     postUninstall file('/scripts/postUninstall.sh')
-
-//    link('/opt/wildfly-10.1.0.Final', '/opt/wildfly')
 }
 
 task buildWildfly10FinalProdRpm(type: Rpm) {
@@ -51,6 +49,9 @@ task buildWildfly10FinalProdRpm(type: Rpm) {
     }
     from('/resources/standalone/wildfly.service') {
         into '/etc/systemd/system'
+
+        addParentDirs = false
+        createDirectoryEntry = true
     }
     from('/resources/standalone/launch.sh') {
         into '/opt/wildfly/bin'

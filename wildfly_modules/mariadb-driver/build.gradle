@@ -1,8 +1,8 @@
 ospackage {
-    from('/resources/cli') {
-        into '/tmp//mariadb-driver/cli'
+    from('/cli') {
+        into '/tmp/mariadb-driver/cli'
     }
 
-    postInstall file('resources/rpm/scripts/postInstall.sh')
-    preUninstall file('resources/rpm/scripts/preUninstall.sh')
+    postInstall file('/rpm/scripts/postInstall.sh')
+    preUninstall file('/rpm/scripts/preUninstall.sh')
 }

@@ -29,8 +29,8 @@ subprojects {
                 version = "${distributionPackageVersion}"
                 release = "${distributionPackageRelease}"
 
-                user = 'wildfly'
-                permissionGroup = 'wildfly'
+                user = 'root'
+                permissionGroup = 'root'
 
                 os = LINUX
                 type = BINARY
@@ -47,10 +47,9 @@ subprojects {
 
                 requires('wildfly')
 
-                // it's conflict with 'wildfly' installed rpm, if do copy to linked folder...
-                into '/opt/wildfly/modules'
-
                 from('/resources') {
+                    into '/opt/wildfly/modules'
+
                     addParentDirs = false
                     createDirectoryEntry = true
                 }
