@@ -23,9 +23,9 @@ ospackage {
         provides("$it".trim())
     }
 
-    requires('java-1.8.0', '1.8', GREATER | EQUAL)
+    requires('jdk-9.0.4', '9.0.4', GREATER | EQUAL)
 
-    from('/resources/wildfly-10.1.0.Final/') {
+    from('/resources/wildfly-12.0.0.Final/') {
         into '/opt/wildfly'
         createDirectoryEntry = true
     }
@@ -36,7 +36,7 @@ ospackage {
     postUninstall file('/scripts/postUninstall.sh')
 }
 
-task buildWildfly10FinalProdRpm(type: Rpm) {
+task buildWildflyFinalProdRpm(type: Rpm) {
     packageName = "${distributionPackageName}"
     packageDescription = "${distributionPackageDescription}"
 
@@ -53,7 +53,7 @@ task buildWildfly10FinalProdRpm(type: Rpm) {
     }
 }
 
-task buildWildfly10FinalDevRpm(type: Rpm) {
+task buildWildflyFinalDevRpm(type: Rpm) {
     packageName = "${distributionPackageName}-dev"
     packageDescription = "${distributionPackageDescription} Configured for developing wildfly applications."
 
@@ -82,6 +82,6 @@ artifacts {
             name: "${distributionPackageName}-dev", type: 'rpm', classifier: 'noarch'
 }
 
-task buildAndPublish(dependsOn: [buildWildfly10FinalProdRpm, buildWildfly10FinalDevRpm, uploadDistributions], overwrite: true) {
+task buildAndPublish(dependsOn: [buildWildflyFinalProdRpm, buildWildflyFinalDevRpm, uploadDistributions], overwrite: true) {
 }
-uploadDistributions.mustRunAfter([buildWildfly10FinalProdRpm, buildWildfly10FinalDevRpm])
+uploadDistributions.mustRunAfter([buildWildflyFinalProdRpm, buildWildflyFinalDevRpm])

@@ -4,3 +4,4 @@
 /**/.gradle/
 /**/build/
 /properties.gradle
+!/wildfly-server/resources/wildfly-12.0.0.Final/bin/
