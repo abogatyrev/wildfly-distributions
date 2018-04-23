@@ -1,0 +1,8 @@
+ospackage {
+    from('/cli') {
+        into '/tmp/postgresql-driver/cli'
+    }
+
+    postInstall file('/rpm/scripts/postInstall.sh')
+    preUninstall file('/rpm/scripts/preUninstall.sh')
+}

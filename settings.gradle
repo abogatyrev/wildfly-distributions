@@ -32,3 +32,6 @@ include ':wildfly-modules:moskito'
 
 include ':wildfly-modules:reflections'
 include ':wildfly-modules:swagger'
+
+include ':wildfly-modules:jboss-client-legacy'
+include ':wildfly-modules:postgresql-driver'
