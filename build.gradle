@@ -72,7 +72,7 @@ subprojects {
             repositories {
                 mavenDeployer {
                     configuration = configurations.distributions
-                    repository(url: 'http://nexus.avbsoft.org/content/repositories/wildfly-distributions/') {
+                    repository(url: 'http://nexus.avbsoft.org/repository/wildfly-distributions/') {
                         authentication(userName: "${nexusUsername}", password: "${nexusPassword}")
                     }
                     if (project.name == 'wildfly-server') {

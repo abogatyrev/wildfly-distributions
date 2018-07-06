@@ -23,12 +23,13 @@ ospackage {
         provides("$it".trim())
     }
 
-    requires('jdk-9.0.4', '9.0.4', GREATER | EQUAL)
+//    requires('jdk-9.0.4', '9.0.4', GREATER | EQUAL)
 
-    from('/resources/wildfly-12.0.0.Final/') {
+    from("/resources/${wildflyName}/") {
         into '/opt/wildfly'
         createDirectoryEntry = true
     }
+    link("/opt/${wildflyName}", '/opt/wildfly')
 
     preInstall file('/scripts/preInstall.sh')
     postInstall file('/scripts/postInstall.sh')
