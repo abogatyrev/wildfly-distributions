@@ -14,7 +14,7 @@
 
     <dependencies>
         <module name="org.reflections"/>
-        <module name="org.apache.commons-lang3"/>
+        <module name="org.apache.commons.lang3"/>
 
         <module name="com.fasterxml.jackson.core.jackson-core"/>
         <module name="com.fasterxml.jackson.core.jackson-annotations"/>
