@@ -1,0 +1,3 @@
+ospackage {
+//    requires('apache-commons-lang3-wildfly-module', '3.5')
+}
