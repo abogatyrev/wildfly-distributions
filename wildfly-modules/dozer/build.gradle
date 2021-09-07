@@ -1,4 +1,4 @@
 ospackage {
-    requires('apache-commons-lang3-wildfly-module', '3.5')
-    requires('objenesis-wildfly-module', '2.6')
+    requires('apache-commons-lang3-wildfly-module')
+    requires('objenesis-wildfly-module')
 }

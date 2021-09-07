@@ -1,0 +1,10 @@
+<module xmlns="urn:jboss:module:1.3" name="net.anotheria.configureme">
+    <resources>
+        <resource-root path="configureme-2.4.1.jar"/>
+        <resource-root path="json-20210307.jar"/>
+    </resources>
+    <dependencies>
+<!--        <module name="javax.api"/>-->
+        <module name="org.slf4j"/>
+    </dependencies>
+</module>

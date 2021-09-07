@@ -5,3 +5,5 @@
 /**/build/
 /properties.gradle
 !/wildfly-server/resources/wildfly-12.0.0.Final/bin/
+!/wildfly-server/resources/wildfly-15.0.0.Final/bin/
+/.git-ignore/

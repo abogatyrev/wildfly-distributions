@@ -3,7 +3,6 @@ apply from: 'properties.gradle'
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
@@ -16,7 +15,7 @@ buildscript {
 subprojects {
     if (project.parent.name == 'wildfly-modules' || project.name == 'wildfly-server') {
         apply plugin: 'nebula.ospackage'
-        apply plugin: 'maven'
+        apply plugin: 'maven-publish'
 
         if (project.parent.name == 'wildfly-modules') {
             // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
@@ -58,54 +57,42 @@ subprojects {
             }
         }
 
-        configurations {
-            distributions
-        }
-        artifacts {
-            distributions file: new File("${buildDir}/distributions", "${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm"),
-                    name: "${distributionPackageName}", type: 'rpm', classifier: 'noarch'
-        }
-
-        uploadDistributions {
-            description 'Uploads the RPM distributions.'
-            group 'publishing'
+        publishing {
             repositories {
-                mavenDeployer {
-                    configuration = configurations.distributions
-                    repository(url: 'http://nexus.avbsoft.org/repository/wildfly-distributions/') {
-                        authentication(userName: "${nexusUsername}", password: "${nexusPassword}")
-                    }
-                    if (project.name == 'wildfly-server') {
-                        addFilter('rpm-prod') { artifact, file ->
-                            artifact.ext == 'rpm'
-                            artifact.name == "${distributionPackageName}"
-                        }
-                        pom('rpm-prod').version = "${distributionPackageVersion}-${distributionPackageRelease}"
-                        pom('rpm-prod').artifactId = "${distributionPackageName}"
-                        pom('rpm-prod').whenConfigured { pom -> pom.dependencies.clear() } // not need dependencies...
+                maven {
+                    name 'distribution'
+                    url 'http://nexus.avbsoft.org/repository/wildfly-distributions/'
+                    allowInsecureProtocol true
 
-                        addFilter('rpm-dev') { artifact, file ->
-                            artifact.ext == 'rpm'
-                            artifact.name == "${distributionPackageName}-dev"
-                        }
-                        pom('rpm-dev').version = "${distributionPackageVersion}-${distributionPackageRelease}"
-                        pom('rpm-dev').artifactId = "${distributionPackageName}-dev"
-                        pom('rpm-dev').whenConfigured { pom -> pom.dependencies.clear() } // not need dependencies...
-                    } else {
-                        pom.version = "${distributionPackageVersion}-${distributionPackageRelease}"
-                        pom.whenConfigured { pom -> pom.dependencies.clear() } // not need dependencies...
+                    credentials {
+                        username = "${nexusUsername}"
+                        password = "${nexusPassword}"
                     }
                 }
             }
         }
 
-        task buildAndPublish(dependsOn: [buildRpm, uploadDistributions]) {}
-        uploadDistributions.mustRunAfter([buildRpm])
-
+        if (project.name != 'wildfly-server') {
+            publishing {
+                publications {
+                    rpm(MavenPublication) {
+                        artifacts {
+                            artifact("${buildDir}/distributions/${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm") {
+                                artifactId "${distributionPackageName}"
+                                classifier 'noarch'
+                                extension 'rpm'
+                                version "${distributionPackageVersion}-${distributionPackageRelease}"
+                            }
+                        }
+                    }
+                }
+            }
+            task buildAndPublish(dependsOn: [buildRpm, publishRpmPublicationToDistributionRepository]) {}
+            publishRpmPublicationToDistributionRepository.mustRunAfter([buildRpm])
+        }
     }
+}
 
-
-    task Wrapper(type: Wrapper) { // run > gradle wrapper
-        gradleVersion = "${gradleVersion}"
-    }
+task Wrapper(type: Wrapper) { // run > gradle wrapper
+    gradleVersion = "${gradleVersion}"
 }

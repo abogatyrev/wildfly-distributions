@@ -2,9 +2,10 @@
 
 <module xmlns="urn:jboss:module:1.3" name="org.jadira">
     <resources>
-        <resource-root path="cdt-5.0.0.GA.jar"/>
-        <resource-root path="usertype.core-5.0.0.GA.jar"/>
-        <resource-root path="usertype.spi-5.0.0.GA.jar"/>
+        <resource-root path="cdt-7.0.0.CR1.jar"/>
+        <resource-root path="usertype.core-7.0.0.CR1.jar"/>
+        <resource-root path="usertype.spi-7.0.0.CR1.jar"/>
+        <resource-root path="bindings-7.0.0.CR1.jar"/>
     </resources>
     <dependencies>
         <module name="org.hibernate"/>

@@ -1,0 +1,8 @@
+<module xmlns="urn:jboss:module:1.5" name="org.apache.commons-io">
+    <resources>
+        <resource-root path="commons-io-2.11.0.jar"/>
+    </resources>
+    <dependencies>
+        <module name="org.apache.commons.lang3"/>
+    </dependencies>
+</module>

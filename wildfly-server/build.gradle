@@ -78,11 +78,29 @@ task buildWildflyFinalDevRpm(type: Rpm) {
     }
 }
 
-artifacts {
-    distributions file: new File("${buildDir}/distributions", "${distributionPackageName}-dev-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm"),
-            name: "${distributionPackageName}-dev", type: 'rpm', classifier: 'noarch'
+publishing {
+    publications {
+        wfProdRpm(MavenPublication) {
+            artifact("${buildDir}/distributions/${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm") {
+                artifactId "${distributionPackageName}"
+                classifier 'noarch'
+                extension 'rpm'
+                version "${distributionPackageVersion}-${distributionPackageRelease}"
+            }
+        }
+        wfDevRpm(MavenPublication) {
+            artifact("${buildDir}/distributions/${distributionPackageName}-dev-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm") {
+                artifactId "${distributionPackageName}-dev"
+                classifier 'noarch'
+                extension 'rpm'
+                version "${distributionPackageVersion}-${distributionPackageRelease}"
+            }
+        }
+    }
 }
 
-task buildAndPublish(dependsOn: [buildWildflyFinalProdRpm, buildWildflyFinalDevRpm, uploadDistributions], overwrite: true) {
-}
-uploadDistributions.mustRunAfter([buildWildflyFinalProdRpm, buildWildflyFinalDevRpm])
+task buildAndPublishWFServer(dependsOn: [buildWildflyFinalProdRpm, buildWildflyFinalDevRpm,
+                                         publishWfProdRpmPublicationToDistributionRepository,
+                                         publishWfDevRpmPublicationToDistributionRepository]) {}
+publishWfProdRpmPublicationToDistributionRepository.mustRunAfter([buildWildflyFinalProdRpm])
+publishWfDevRpmPublicationToDistributionRepository.mustRunAfter([buildWildflyFinalDevRpm])

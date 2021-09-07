@@ -1,0 +1,14 @@
+<module xmlns="urn:jboss:module:1.3" name="net.anotheria.moskito-core">
+    <resources>
+        <resource-root path="moskito-core-2.10.1.jar"/>
+        <resource-root path="gson-2.8.7.jar"/>
+    </resources>
+
+    <dependencies>
+        <module name="javax.api"/>
+        <module name="org.slf4j"/>
+        <module name="net.anotheria.ano-util"/>
+        <module name="net.anotheria.configureme"/>
+        <module name="org.apache.commons.lang3"/>
+    </dependencies>
+</module>
