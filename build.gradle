@@ -13,7 +13,7 @@ buildscript {
 }
 
 subprojects {
-    if (project.parent.name == 'wildfly-modules' || project.name == 'wildfly-server') {
+    if (project.parent.name == 'wildfly-modules' || project.parent.name == 'wildfly-server') {
         apply plugin: 'nebula.ospackage'
         apply plugin: 'maven-publish'
 
@@ -72,24 +72,25 @@ subprojects {
             }
         }
 
-        if (project.name != 'wildfly-server') {
-            publishing {
-                publications {
-                    rpm(MavenPublication) {
-                        artifacts {
-                            artifact("${buildDir}/distributions/${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm") {
-                                artifactId "${distributionPackageName}"
-                                classifier 'noarch'
-                                extension 'rpm'
-                                version "${distributionPackageVersion}-${distributionPackageRelease}"
-                            }
+        publishing {
+            publications {
+                rpm(MavenPublication) {
+                    artifacts {
+                        artifact("${buildDir}/distributions/${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm") {
+                            artifactId "${distributionPackageName}"
+                            classifier 'noarch'
+                            extension 'rpm'
+                            version "${distributionPackageVersion}-${distributionPackageRelease}"
                         }
+                    }
+                    pom {
+                        packaging = 'rpm'
                     }
                 }
             }
-            task buildAndPublish(dependsOn: [buildRpm, publishRpmPublicationToDistributionRepository]) {}
-            publishRpmPublicationToDistributionRepository.mustRunAfter([buildRpm])
         }
+        task buildAndPublish(dependsOn: [buildRpm, publishRpmPublicationToDistributionRepository]) {}
+        publishRpmPublicationToDistributionRepository.mustRunAfter([buildRpm])
     }
 }
 
