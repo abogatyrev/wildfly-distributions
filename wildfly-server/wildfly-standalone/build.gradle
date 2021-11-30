@@ -9,8 +9,6 @@ ospackage {
     version = "${distributionPackageVersion}"
     release = "${distributionPackageRelease}"
 
-    conflicts('wildfly-server')
-    
     user = 'wildfly'
     permissionGroup = 'wildfly'
 

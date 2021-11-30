@@ -28,8 +28,8 @@ subprojects {
                 version = "${distributionPackageVersion}"
                 release = "${distributionPackageRelease}"
 
-                user = 'root'
-                permissionGroup = 'root'
+                user = 'wildfly'
+                permissionGroup = 'wildfly'
 
                 os = LINUX
                 type = BINARY
@@ -47,13 +47,13 @@ subprojects {
                 requires('wildfly')
 
                 from('/resources') {
-                    into '/opt/wildfly/modules'
+                    into '/opt/wildfly-modules'
 
                     addParentDirs = false
                     createDirectoryEntry = true
                 }
-
-//            postInstall file('../_resources/rpm/scripts/echo_restart_wildfly.sh')
+                
+            postInstall file('../_resources/rpm/scripts/echo_restart_wildfly.sh')
             }
         }
 

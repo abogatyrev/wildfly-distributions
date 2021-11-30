@@ -219,7 +219,7 @@ if [ "x$JBOSS_CONFIG_DIR" = "x" ]; then
 fi
 
 if [ "x$JBOSS_MODULEPATH" = "x" ]; then
-    JBOSS_MODULEPATH="$JBOSS_HOME/modules"
+    JBOSS_MODULEPATH="$JBOSS_HOME/modules:/opt/wildfly-modules"
 fi
 
 # For Cygwin, switch paths to Windows format before running java
