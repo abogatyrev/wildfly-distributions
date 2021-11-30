@@ -1,6 +1,8 @@
 rootProject.name = 'wildfly-distributions'
 
-include 'wildfly-server'
+include ':wildfly-server:wildfly-standalone'
+include ':wildfly-server:wildfly-server-config'
+include ':wildfly-server:wildfly-server-dev-config'
 
 include ':wildfly-modules:apache-commons-configuration'
 include ':wildfly-modules:apache-commons-configuration2'

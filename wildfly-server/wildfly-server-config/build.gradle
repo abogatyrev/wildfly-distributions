@@ -1,0 +1,46 @@
+ospackage {
+    println "RPM artifacts: \n" +
+            "1. ${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm\n"
+    distributionTags = "${distributionTags}".split(',')
+    println "Tags: ${distributionTags}"
+
+    packageName = "${distributionPackageName}"
+    packageDescription = "${distributionPackageDescription}"
+    version = "${distributionPackageVersion}"
+    release = "${distributionPackageRelease}"
+
+    conflicts('wildfly-server-dev-config')
+
+    user = 'wildfly'
+    permissionGroup = 'wildfly'
+
+    os = LINUX
+    type = BINARY
+
+    license = "${distributionPackageLicense}"
+    url = "${distributionPackageUrl}"
+
+    packager = 'Andrey Bogatyrev'
+
+    distributionTags.each {
+        provides("$it".trim())
+    }
+
+    requires('wildfly-server')
+//    requires('jdk-9.0.4', '9.0.4', GREATER | EQUAL)
+
+    from('/service-config/wildfly.conf') {
+        into '/etc/wildfly'
+    }
+    from('/service-config/wildfly.service') {
+        into '/etc/systemd/system'
+        user = 'root'
+        permissionGroup = 'root'
+    }
+    from('/service-config/launch.sh') {
+        into '/etc/wildfly'
+    }
+
+    postInstall file('/scripts/postInstall.sh')
+    preUninstall file('/scripts/preUninstall.sh')
+}

@@ -1,0 +1,12 @@
+embed-server
+batch
+
+/interface=management:undefine-attribute(name="inet-address")
+/interface=management:write-attribute(name="any-address", value="true")
+
+/interface=public:undefine-attribute(name="inet-address")
+/interface=public:write-attribute(name="any-address", value="true")
+
+/socket-binding-group=standard-sockets:write-attribute(name="port-offset", value="${jboss.socket.binding.port-offset:20000}")
+
+run-batch
