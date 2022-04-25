@@ -41,3 +41,5 @@ include ':wildfly-modules:jboss-client-legacy'
 include ':wildfly-modules:postgresql-driver'
 
 include ':wildfly-modules:objenesis'
+include ':wildfly-modules:apache-commons-compress'
+include ':wildfly-modules:apache-commons-collections4'

@@ -1,3 +1,5 @@
 ospackage {
     requires('apache-xmlbeans-wildfly-module')
+    requires('apache-commons-compress-wildfly-module')
+    requires('apache-commons-collections4-wildfly-module')
 }

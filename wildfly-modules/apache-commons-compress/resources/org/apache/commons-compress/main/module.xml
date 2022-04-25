@@ -1,0 +1,5 @@
+<module xmlns="urn:jboss:module:1.5" name="org.apache.commons-compress">
+    <resources>
+        <resource-root path="commons-compress-1.21.jar"/>
+    </resources>
+</module>

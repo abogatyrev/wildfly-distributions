@@ -1,7 +1,8 @@
 #@IgnoreInspection BashAddShebang
 
 echo "Remove old Wildfly config by CLI..."
-sudo -u wildfly /opt/wildfly/bin/jboss-cli.sh '--file=/tmp/wildfly/cli/remove-config.cli'
+#sudo -u wildfly /opt/wildfly/bin/jboss-cli.sh '--file=/tmp/wildfly/cli/remove-config.cli'
+/opt/wildfly/bin/jboss-cli.sh '--file=/tmp/wildfly/cli/remove-config.cli'
 
 # stop and disable service
 [ -x /bin/systemctl ] && (sudo systemctl stop wildfly || :) || (sudo service wildfly stop || :)
