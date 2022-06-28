@@ -1,4 +1,5 @@
 apply from: 'properties.gradle'
+import io.github.httpbuilderng.http.HttpTask
 
 buildscript {
     repositories {
@@ -9,18 +10,22 @@ buildscript {
     }
     dependencies {
         classpath "com.netflix.nebula:gradle-ospackage-plugin:${gradleOspackagePlugin}"
+        classpath 'gradle.plugin.io.github.http-builder-ng:http-plugin:0.1.1'
     }
 }
+
+apply plugin: "io.github.http-builder-ng.http-plugin"
 
 subprojects {
     if (project.parent.name == 'wildfly-modules' || project.parent.name == 'wildfly-server') {
         apply plugin: 'nebula.ospackage'
         apply plugin: 'maven-publish'
+        apply plugin: 'io.github.http-builder-ng.http-plugin'
 
         if (project.parent.name == 'wildfly-modules') {
             // in case of conflicts need to use: rpm -iv --replacefiles rpm_name.rpm
             ospackage {
-                println "RPM artifact: ${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm"
+                println "Artifact: ${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}"
                 distributionTags = "${distributionTags}".split(',')
                 println "Tags: ${distributionTags}"
 
@@ -57,8 +62,18 @@ subprojects {
         publishing {
             repositories {
                 maven {
-                    name 'distribution'
+                    name 'wfCommonRpm'
                     url 'http://nexus.avbsoft.org/repository/wildfly-distributions/'
+                    allowInsecureProtocol true
+
+                    credentials {
+                        username = "${nexusUsername}"
+                        password = "${nexusPassword}"
+                    }
+                }
+                maven {
+                    name 'wfCommonDeb'
+                    url 'https://nexus.avbsoft.org/repository/wildfly-common-deb/'
                     allowInsecureProtocol true
 
                     credentials {
@@ -84,10 +99,45 @@ subprojects {
                         packaging = 'rpm'
                     }
                 }
+                /*
+                You can use HTTP POST or use Upload in the UI, as documented here, to upload packages to Apt hosted repository.
+                The following example uses the  curl  command and example credentials of admin for user and admin123 for password to upload a test.deb file to a hosted Apt repository:
+                > curl -u "admin:admin123" -H "Content-Type: multipart/form-data" --data-binary "@./test.deb" "http://localhost:8081/repository/apt-hosted/"
+                */
+                deb(MavenPublication) {
+                    artifacts {
+                        artifact("${buildDir}/distributions/${distributionPackageName}_${distributionPackageVersion}-${distributionPackageRelease}_all.deb") {
+                            artifactId "${distributionPackageName}"
+                            classifier 'all'
+                            extension 'deb'
+                            version "${distributionPackageVersion}-${distributionPackageRelease}"
+                        }
+                    }
+                    pom {
+                        packaging = 'deb'
+                    }
+                }
             }
         }
-        task buildAndPublish(dependsOn: [buildRpm, publishRpmPublicationToDistributionRepository]) {}
-        publishRpmPublicationToDistributionRepository.mustRunAfter([buildRpm])
+        task buildAndPublishRpm(dependsOn: [buildRpm, publishRpmPublicationToWfCommonRpmRepository]) {}
+        publishRpmPublicationToWfCommonRpmRepository.mustRunAfter([buildRpm])
+
+//        task buildAndPublishDeb(dependsOn: [buildDeb, publishDebPublicationToWfCommonDebRepository]) {}
+//        publishDebPublicationToWfCommonDebRepository.mustRunAfter([buildDeb])
+
+        //TODO: https://github.com/http-builder-ng/gradle-http-plugin
+        /*task buildAndPublishDeb(type: HttpTask) {
+            config {
+                it.request.setUri = "http://something.com"
+            }
+            post {
+                it.request.uri.setPath("/notify")
+            }
+            response.success { fromServer, body ->
+                println("The event notification was successful")
+            }
+        }*/
+
     }
 }
 

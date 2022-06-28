@@ -1,6 +1,6 @@
 ospackage {
-    println "RPM artifacts: \n" +
-            "1. ${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}.noarch.rpm\n"
+    println "Artifacts: \n" +
+            "1. ${distributionPackageName}-${distributionPackageVersion}-${distributionPackageRelease}\n"
     distributionTags = "${distributionTags}".split(',')
     println "Tags: ${distributionTags}"
 

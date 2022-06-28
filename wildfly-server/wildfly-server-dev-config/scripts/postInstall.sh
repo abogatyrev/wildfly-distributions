@@ -22,6 +22,6 @@ echo "Configuring Wildfly by CLI..."
 /opt/wildfly/bin/add-user.sh -u 'admin' -p 'qwerty' --silent
 
 # Start and enable service
-[ -x /bin/systemctl ] && (sudo systemctl daemon-reload || :)
-[ -x /bin/systemctl ] && (sudo systemctl start wildfly || :) || (sudo service wildfly start || :)
-[ -x /bin/systemctl ] && (sudo systemctl enable wildfly || :) || (sudo service wildfly enable || :)
+[ -x /bin/systemctl ] && (systemctl daemon-reload || :)
+[ -x /bin/systemctl ] && (systemctl start wildfly || :) || (service wildfly start || :)
+[ -x /bin/systemctl ] && (systemctl enable wildfly || :) || (service wildfly enable || :)
