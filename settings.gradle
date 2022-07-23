@@ -15,6 +15,7 @@ include ':wildfly-modules:apache-commons-io'
 include ':wildfly-modules:apache-poi'
 include ':wildfly-modules:apache-xmlbeans'
 include ':wildfly-modules:apache-ftpserver'
+include ':wildfly-modules:apache-sftpserver'
 
 include ':wildfly-modules:dozer'
 include ':wildfly-modules:drools'
