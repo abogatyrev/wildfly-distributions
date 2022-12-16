@@ -1,5 +1,6 @@
 #@IgnoreInspection BashAddShebang
 
+chown -R wildfly:wildfly /opt/wildfly
 chmod +x /opt/wildfly/bin/*.sh
 
 # remove all Windows end of line symbols
